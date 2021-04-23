@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="main.css" type="text/css">
+
+    <title>Custom Video Player</title>
+</head>
+
+<body style="margin: 0;">
+<div class="body__main">
+    <div id="custom_video">
+        <video id="main_video" loop="" preload="auto">
+            <source src="Human_Earth.mp4" type="video/mp4">
+        </video>
+
+        <div id="button_parent">
+            <div id="control_button" style="display: none;">
+                <div id="playPauseSymbol" class="button_play"></div>
+            </div>
+        </div>
+
+        <div id="fullscreen"></div>
+
+        <div id="progress_bar">
+            <div id="current_position"></div>
+        </div>
+    </div>
+</div>
+
+<script src="main.js"></script>
+
+</body>
+</html>
