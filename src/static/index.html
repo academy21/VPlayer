@@ -3,27 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="main.css" type="text/css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <title>Custom Video Player</title>
 </head>
 
 <body style="margin: 0;">
 <div class="body__main">
     <div id="custom_video">
-        <video id="main_video" loop="" preload="auto">
+        <video id="main_video" preload="auto">
             <source src="Human_Earth.mp4" type="video/mp4">
         </video>
 
         <div id="button_parent">
-            <div id="control_button" style="display: none;">
+            <div id="play_pause_button">
                 <div id="playPauseSymbol" class="button_play"></div>
             </div>
         </div>
 
-        <div id="fullscreen"></div>
-
-        <div id="progress_bar">
-            <div id="current_position"></div>
+        <div id="controls">
+            <div id="progress_bar">
+                <div id="current_position"></div>
+            </div>
+            <div id="left_controls">
+                <div id="restart" class="material-icons"></div>
+                <div id="timer"></div>
+            </div>
+            <div id="fullscreen" style="display: block;"></div>
         </div>
     </div>
 </div>
