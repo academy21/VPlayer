@@ -1,5 +1,6 @@
 :root {
     --controls-color: red;
+    --square-elements-wh: 15px;
 }
 
 #custom_video {
@@ -127,4 +128,22 @@ div#play_pause_button:hover {
 #left_controls {
     display: flex;
     align-items: center;
+}
+
+#progress_bar:hover {
+    cursor: pointer;
+}
+
+#volume {
+    width: var(--square-elements-wh);
+    height: var(--square-elements-wh);
+    border: solid 2px var(--controls-color);
+    border-top-color: var(--controls-color);
+    border-right-color: #FF000000;
+    border-bottom-color: #FF000000;
+    border-left-color: #FF000000;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 50%;
+    transform: rotate(45deg);
 }

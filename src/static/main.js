@@ -1,10 +1,10 @@
-let controlBtn      = document.getElementById("play_pause_button");
-let controlsBar     = document.getElementById("controls");
-let fullscreenBtn   = document.getElementById( "fullscreen" );
-let restartBtn      = document.getElementById("restart");
-let progressBar     = document.getElementById("progress_bar");
+let controlBtn = document.getElementById("play_pause_button");
+let controlsBar = document.getElementById("controls");
+let fullscreenBtn = document.getElementById("fullscreen");
+let restartBtn = document.getElementById("restart");
+let progressBar = document.getElementById("progress_bar");
 let currentPosition = document.getElementById("current_position");
-let videoEl         = document.querySelector("#custom_video > video");
+let videoEl = document.querySelector("#custom_video > video");
 let playPauseSymbol = document.getElementById('playPauseSymbol');
 let pauseFlg = true;
 let mouseInsideFlg = false;
@@ -17,10 +17,24 @@ let rewindInterval = 5;
 function rewindVideo(time) {
     let newCurrentTime = videoEl.currentTime + time;
 
-    if ( newCurrentTime > videoEl.duration ) {
+    if (newCurrentTime > videoEl.duration) {
         videoEl.currentTime = videoEl.duration;
     } else {
         videoEl.currentTime = newCurrentTime;
+    }
+}
+
+function setCurrentVideoTime(time) {
+    if ( time >= 0 && time <= videoEl.duration ) {
+        videoEl.currentTime = time;
+    }
+
+    if ( time < 0 ) {
+        videoEl.currentTime = 0;
+    }
+
+    if ( time > videoEl.duration ) {
+        videoEl.currentTime = videoEl.duration;
     }
 }
 
@@ -31,7 +45,7 @@ function getCurrentVideoPositionInPercent() {
     return (currentTime / videoLength) * 100;
 }
 
-function setCurrentProgressBarPosition(position) {
+function setCurrentProgressBarPositionInPercents(position) {
     currentPosition.style['width'] = position + "%";
 }
 
@@ -40,20 +54,20 @@ function updateTimer() {
     let length;
 
     let currentTime = videoEl.currentTime;
-    substrPosition = currentTime < 60*60 ? 14 : 11;
+    substrPosition = currentTime < 60 * 60 ? 14 : 11;
     length = 19 - substrPosition;
     currentTime = new Date(currentTime * 1000).toISOString().substr(substrPosition, length);
 
     let videoLength = videoEl.duration;
-    substrPosition = videoLength < 60*60 ? 14 : 11;
+    substrPosition = videoLength < 60 * 60 ? 14 : 11;
     length = 19 - substrPosition;
-    videoLength = new Date( videoLength * 1000).toISOString().substr(substrPosition, length);
+    videoLength = new Date(videoLength * 1000).toISOString().substr(substrPosition, length);
 
     let timerPlaceholder = document.getElementById("timer");
     timerPlaceholder.innerHTML = currentTime + " / " + videoLength;
 }
 
-window.onload = function() {
+window.onload = function () {
     updateTimer();
 }
 
@@ -67,10 +81,10 @@ function togglePlayPause() {
         videoEl.play();
         playPauseSymbol.className = 'button_pause';
 
-        currentPlayPauseId = setInterval(function() {
-            setCurrentProgressBarPosition(getCurrentVideoPositionInPercent());
+        currentPlayPauseId = setInterval(function () {
+            setCurrentProgressBarPositionInPercents(getCurrentVideoPositionInPercent());
             updateTimer();
-        } , 100);
+        }, 100);
     }
 
     pauseFlg = !pauseFlg;
@@ -88,7 +102,7 @@ function toggleFullscreen() {
 
 function restartVideo() {
     videoEl.currentTime = 0.0;
-    setCurrentProgressBarPosition(getCurrentVideoPositionInPercent());
+    setCurrentProgressBarPositionInPercents(getCurrentVideoPositionInPercent());
 }
 
 controlBtn.onclick = togglePlayPause;
@@ -97,7 +111,7 @@ restartBtn.onclick = restartVideo;
 
 let custom_video = document.getElementById("custom_video");
 
-function showControls () {
+function showControls() {
     controlBtn.style['display'] = 'block';
     controlsBar.style['opacity'] = 1;
     //progressBar.style['display'] = 'block';
@@ -110,7 +124,7 @@ function hideControls() {
 }
 
 function hideControlsOnPlay() {
-    if ( !pauseFlg ) {
+    if (!pauseFlg) {
         hideControls();
     }
 }
@@ -126,7 +140,7 @@ function reinitEventsOnMouseLeave() {
 }
 
 function setControlsVisibility() {
-    if ( !mouseInsideFlg && !pauseFlg ) {
+    if (!mouseInsideFlg && !pauseFlg) {
         hideControls();
     } else {
         showControls();
@@ -145,12 +159,26 @@ document.body.onkeydown = function (e) {
         case 37: // Left
             rewindVideo(-rewindInterval);
             updateTimer();
-            setCurrentProgressBarPosition(getCurrentVideoPositionInPercent());
+            setCurrentProgressBarPositionInPercents(getCurrentVideoPositionInPercent());
             break;
         case 39: // Right
             rewindVideo(rewindInterval);
             updateTimer();
-            setCurrentProgressBarPosition(getCurrentVideoPositionInPercent());
+            setCurrentProgressBarPositionInPercents(getCurrentVideoPositionInPercent());
             break;
     }
 }
+
+function getVideoPositionInSeconds(percents) {
+    return videoEl.duration / 100 * percents;
+}
+
+progressBar.addEventListener('click', function (event) {
+    let progress_bar_width = progressBar.offsetWidth;
+    let current_mouse_click_x_position = event.offsetX;
+    let progress_bar_width_in_percents = (current_mouse_click_x_position / progress_bar_width) * 100;
+
+    setCurrentVideoTime(getVideoPositionInSeconds(progress_bar_width_in_percents));
+    setCurrentProgressBarPositionInPercents(progress_bar_width_in_percents);
+    updateTimer();
+}, false);
