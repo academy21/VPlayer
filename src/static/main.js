@@ -6,13 +6,15 @@ let progressBar = document.getElementById("progress_bar");
 let currentPosition = document.getElementById("current_position");
 let videoEl = document.querySelector("#custom_video > video");
 let playPauseSymbol = document.getElementById('playPauseSymbol');
+let volumeIcon = document.getElementById("volume");
 let pauseFlg = true;
 let mouseInsideFlg = false;
 
 let currentTime = 0;
 let currentPlayPauseId = 0;
 
-let rewindInterval = 5;
+const rewindInterval = 5; // in seconds
+const volumeShiftinterval = 10; // in percents
 
 function rewindVideo(time) {
     let newCurrentTime = videoEl.currentTime + time;
@@ -25,15 +27,15 @@ function rewindVideo(time) {
 }
 
 function setCurrentVideoTime(time) {
-    if ( time >= 0 && time <= videoEl.duration ) {
+    if (time >= 0 && time <= videoEl.duration) {
         videoEl.currentTime = time;
     }
 
-    if ( time < 0 ) {
+    if (time < 0) {
         videoEl.currentTime = 0;
     }
 
-    if ( time > videoEl.duration ) {
+    if (time > videoEl.duration) {
         videoEl.currentTime = videoEl.duration;
     }
 }
@@ -147,6 +149,55 @@ function setControlsVisibility() {
     }
 }
 
+function setCurrentVolume(val) {
+    if (val < 0) {
+        videoEl.volume = 0;
+        return videoEl.volume;
+    }
+
+    if (val > 1) {
+        videoEl.volume = 1;
+        return videoEl.volume;
+    }
+
+    return videoEl.volume = val;
+}
+
+function shiftVolumeInPercents(val) {
+    let volumeShift = val / 100;
+    let newVolumeVal = videoEl.volume + volumeShift;
+
+    return setCurrentVolume(newVolumeVal);
+}
+
+function updateVolumeIcon(val) {
+    console.log("val", val);
+
+    volumeIcon.className = '';
+
+    if ( val >= 0.75 ) {
+        volumeIcon.className = 'progress_100';
+        return;
+    }
+
+    if ( val >= 0.50 ) {
+        volumeIcon.className = 'progress_75';
+        return;
+    }
+
+    if ( val >= 0.25 ) {
+        volumeIcon.className = 'progress_50';
+        return;
+    }
+
+    if ( val >= 0.1 ) {
+        volumeIcon.className = 'progress_25';
+        return;
+    }
+
+    volumeIcon.className = 'progress_00';
+}
+
 custom_video.onmouseenter = reinitEventsOnMouseEnter;
 custom_video.onmouseleave = reinitEventsOnMouseLeave;
 
@@ -166,6 +217,12 @@ document.body.onkeydown = function (e) {
             updateTimer();
             setCurrentProgressBarPositionInPercents(getCurrentVideoPositionInPercent());
             break;
+        case 38: // Up
+            updateVolumeIcon(shiftVolumeInPercents(+volumeShiftinterval));
+            break;
+        case 40: // Down
+            updateVolumeIcon(shiftVolumeInPercents(-volumeShiftinterval));
+            break;
     }
 }
 
@@ -182,3 +239,9 @@ progressBar.addEventListener('click', function (event) {
     setCurrentProgressBarPositionInPercents(progress_bar_width_in_percents);
     updateTimer();
 }, false);
+
+function initPlayer() {
+    updateVolumeIcon(setCurrentVolume(0.49));
+}
+
+initPlayer();

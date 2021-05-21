@@ -138,12 +138,75 @@ div#play_pause_button:hover {
     width: var(--square-elements-wh);
     height: var(--square-elements-wh);
     border: solid 2px var(--controls-color);
-    border-top-color: var(--controls-color);
-    border-right-color: #FF000000;
-    border-bottom-color: #FF000000;
-    border-left-color: #FF000000;
     margin-left: 5px;
     margin-right: 5px;
     border-radius: 50%;
     transform: rotate(45deg);
+}
+
+#volume.progress_00 {
+    border-top-color: rgba(255, 00, 00, 0);
+    border-right-color: rgba(255, 00, 00, 0);
+    border-bottom-color: rgba(255, 00, 00, 0);
+    border-left-color: rgba(255, 00, 00, 0);
+}
+
+#volume.progress_25 {
+    border-top-color: rgba(255, 00, 00, 0.25);
+    border-right-color: rgba(255, 00, 00, 0);
+    border-bottom-color: rgba(255, 00, 00, 0);
+    border-left-color: rgba(255, 00, 00, 0);
+}
+
+#volume.progress_50 {
+    border-top-color: rgba(255, 00, 00, 0.25);
+    border-right-color: rgba(255, 00, 00, 0.5);
+    border-bottom-color: rgba(255, 00, 00, 0);
+    border-left-color: rgba(255, 00, 00, 0);
+}
+
+#volume.progress_75 {
+    border-top-color: rgba(255, 00, 00, 0.25);
+    border-right-color: rgba(255, 00, 00, 0.5);
+    border-bottom-color: rgba(255, 00, 00, 0.75);
+    border-left-color: rgba(255, 00, 00, 0);
+}
+
+#volume.progress_100 {
+    border-top-color: rgba(255, 00, 00, 0.25);
+    border-right-color: rgba(255, 00, 00, 0.5);
+    border-bottom-color: rgba(255, 00, 00, 0.75);
+    border-left-color: rgba(255, 00, 00, 1.00);
+}
+
+#central_dot {
+    width: 4px;
+    height: 4px;
+    background-color: white;
+    position: absolute;
+    top: calc(50% - 2px);
+    left: calc(50% - 2px);
+    border-radius: 50%;
+}
+
+#volume_block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.volume_slider {
+    display: none;
+    width: 40px;
+    height: 2px;
+    border-radius: 2px;
+    margin-left: 2px;
+    background-color: rgba(255, 255, 255, 0.5);
+    transition: opacity 0.3s;
+}
+
+#volume_block:hover .volume_slider {
+    display: block;
 }
