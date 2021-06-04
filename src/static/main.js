@@ -1,3 +1,4 @@
+let customVideo = document.getElementById("custom_video");
 let controlBtn = document.getElementById("play_pause_button");
 let controlsBar = document.getElementById("controls");
 let fullscreenBtn = document.getElementById("fullscreen");
@@ -7,6 +8,9 @@ let currentPosition = document.getElementById("current_position");
 let videoEl = document.querySelector("#custom_video > video");
 let playPauseSymbol = document.getElementById('playPauseSymbol');
 let volumeIcon = document.getElementById("volume");
+let currentVolume = document.getElementById("current_volume");
+let volumeSlider = document.getElementsByClassName("volume_slider")[0];
+
 let pauseFlg = true;
 let mouseInsideFlg = false;
 
@@ -77,7 +81,6 @@ function togglePlayPause() {
     if (!pauseFlg) {
         videoEl.pause();
         playPauseSymbol.className = 'button_play';
-
         clearInterval(currentPlayPauseId);
     } else {
         videoEl.play();
@@ -171,8 +174,9 @@ function shiftVolumeInPercents(val) {
 }
 
 function updateVolumeIcon(val) {
-    console.log("val", val);
+    let tmp = (val * 100) + '%';
 
+    currentVolume.style['width'] = (val * 100) + '%';
     volumeIcon.className = '';
 
     if ( val >= 0.75 ) {
@@ -230,15 +234,64 @@ function getVideoPositionInSeconds(percents) {
     return videoEl.duration / 100 * percents;
 }
 
-progressBar.addEventListener('click', function (event) {
-    let progress_bar_width = progressBar.offsetWidth;
-    let current_mouse_click_x_position = event.offsetX;
-    let progress_bar_width_in_percents = (current_mouse_click_x_position / progress_bar_width) * 100;
-
-    setCurrentVideoTime(getVideoPositionInSeconds(progress_bar_width_in_percents));
-    setCurrentProgressBarPositionInPercents(progress_bar_width_in_percents);
+function videoProgressBarAction(val) {
+    val *= 100;
+    setCurrentVideoTime(getVideoPositionInSeconds(val));
+    setCurrentProgressBarPositionInPercents(val);
     updateTimer();
+}
+
+function volumeSliderAction(val) {
+    updateVolumeIcon(setCurrentVolume(val));
+}
+
+function setProgressBarValueOnMousePosition(obj, x_offset, action) {
+    let progress_bar_width = obj.offsetWidth;
+    let progress_bar_width_in_percents = (x_offset / progress_bar_width);
+    action(progress_bar_width_in_percents);
+}
+
+progressBar.addEventListener('click', function (event) {
+    setProgressBarValueOnMousePosition(this, event.offsetX, videoProgressBarAction);
 }, false);
+
+volumeSlider.addEventListener( 'click', function (event) {
+    setProgressBarValueOnMousePosition(this, event.offsetX, volumeSliderAction);
+});
+
+let isProgressBarHolded = false;
+let isVolumeSliderHolded = false;
+let x = 0;
+
+progressBar.addEventListener('mousedown', e => {
+    x = e.offsetX;
+    isProgressBarHolded = true;
+});
+
+customVideo.addEventListener('mousemove', function (e) {
+    if (isProgressBarHolded === true) {
+        setProgressBarValueOnMousePosition(this, e.offsetX, videoProgressBarAction);
+        x = e.offsetX;
+    }
+});
+
+volumeSlider.addEventListener('mousedown', e => {
+    x = e.offsetX;
+    isVolumeSliderHolded = true;
+});
+
+volumeSlider.addEventListener('mousemove', function (e) {
+    if (isVolumeSliderHolded === true) {
+        setProgressBarValueOnMousePosition(this, e.offsetX, volumeSliderAction);
+        x = e.offsetX;
+    }
+});
+
+window.addEventListener('mouseup', e => {
+    isProgressBarHolded = false;
+    isVolumeSliderHolded = false;
+});
+
 
 function initPlayer() {
     updateVolumeIcon(setCurrentVolume(0.49));
